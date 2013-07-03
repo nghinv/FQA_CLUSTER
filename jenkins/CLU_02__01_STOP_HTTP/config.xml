@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>TEST_CONFIG</name>
+          <description>&lt;b&gt;Format of the TEST_CONFIG including 3 parts:&lt;/b&gt;&lt;br/&gt;
+(1)!(2)!eXoPLF.install.clustering.sh&lt;br/&gt;
+APPLICATION INFOMATION!CLEANUP DATA OPTION!eXoPLF.install.clustering.sh&lt;br/&gt;</description>
+          <defaultValue>/java/exo-working/PLF4_JBOSS /mnt/jcrdata/datasets/INVALID_DATASET.zip /mnt/jcrdata/testdata!DONT_CLEANUP_DATA!eXoPLF.install.clustering.sh</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>TESTSCRIPT</name>
+          <description></description>
+          <defaultValue>CLU_02</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>Redhat-42</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Default)</jdk>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+sync
+echo &quot;${TEST_CONFIG}&quot;&gt;/mnt/jcrdata/testsuite/${TESTSCRIPT}_CURRENT_CONFIG
+sync
+sleep 5
+echo &quot;information of ${TESTSCRIPT}_CURRENT_CONFIG:&quot;
+cat /mnt/jcrdata/testsuite/${TESTSCRIPT}_CURRENT_CONFIG
+
+/etc/init.d/httpd stop</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>CLU_02__03_STOP_NODE2</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>

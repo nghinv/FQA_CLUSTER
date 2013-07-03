@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>STAGE</name>
+          <description></description>
+          <defaultValue>START</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>TESTSCRIPT</name>
+          <description></description>
+          <defaultValue>CLU_02</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CLU_NODE</name>
+          <description></description>
+          <defaultValue>2</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CLEANUP_DATA</name>
+          <description></description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EXO_QA_CLUSTER_OPTS</name>
+          <description></description>
+          <defaultValue>-Djgroups.tcp.start_port=7800 -Djgroups.tcpping.initial_hosts=192.168.3.42[7800],192.168.3.41[7800] -Djgroups.tcpping.num_initial_members=2 -Djboss.node.name=node2 -Djboss.partition.name=192.168.3.42</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>Redhat-42</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Default)</jdk>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+pushd /mnt/jcrdata/testsuite/
+./platform-clustering-utils.sh ${STAGE} ${TESTSCRIPT}
+sc=`grep -c success ${TESTSCRIPT}_testresult.log`
+if [ ! $sc -gt 0 ]; then
+ a=$((1/0))
+fi</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>CLU_02__09_RESTART_HTTP</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>
